@@ -1,0 +1,30 @@
+{% extends "base.html" %}{% block body %}
+<h1>{{ sub.title or sub.file_name }}</h1>
+<p class="muted">{{ sub.file_name }} &middot; {{ sub.public_id }} &middot; <span class="status {{ sub.status }}">{{ sub.status }}</span>
+{% if sub.pages %} &middot; {{ sub.pages }} pages, {{ "{:,}".format(sub.words) }} words{% endif %}</p>
+{% if active %}
+<div class="card" id="progress" data-id="{{ sub.public_id }}"><b id="stage">{{ sub.stage }}</b>
+<div class="bar-outer"><div class="bar-inner" id="bar" style="width: {{ sub.progress }}%"></div></div>
+<span class="muted"><span id="pct">{{ sub.progress|round|int }}%</span> &middot; Checking takes one to ten minutes. You can leave this page; you will be emailed when it is done, if email is configured.</span></div>
+{% elif sub.status == "failed" %}
+<div class="error"><b>This check failed.</b> {{ sub.error }}</div>
+{% elif data.similarity %}
+<div class="grid">
+  <div class="card"><div class="muted">Similarity</div><div class="big">{{ data.similarity.percent|pct }}%</div>
+    <p class="muted">of counted words match other sources.</p>
+    {% if data.reports.similarity %}<a class="btn" href="{{ data.reports.similarity.url }}">Download Similarity Report</a>{% endif %}</div>
+  <div class="card"><div class="muted">AI writing</div><div class="big">{{ data.ai.display }}</div>
+    <p class="muted">{% if data.ai.scored %}estimated as AI-written. An estimate only: it can be wrong in both directions.{% else %}{{ data.ai.message }}{% endif %}</p>
+    {% if data.reports.ai %}<a class="btn" href="{{ data.reports.ai.url }}">Download AI-Writing Report</a>{% endif %}</div>
+</div>
+{% for w in data.similarity.warnings %}<div class="notice warn">{{ w }}</div>{% endfor %}
+{% for f in data.similarity.integrity %}<div class="notice warn">{{ f }}</div>{% endfor %}
+<h2>Match groups</h2>
+<div class="card"><table>{% for g in data.similarity.groups %}<tr><td style="width:36px"><span class="dot" style="background:{{ g.color }}">{{ g.count }}</span></td><td>{{ g.name }}<div class="muted">{{ g.note }}</div></td><td style="text-align:right"><b>{{ g.percent|pct }}%</b></td></tr>{% endfor %}</table></div>
+<h2>Sources</h2>
+<div class="card">{% if not data.similarity.sources %}<span class="muted">No matching sources were found.</span>{% else %}<table>
+{% for s in data.similarity.sources %}<tr><td style="width:36px"><span class="dot" style="background:{{ s.color }}">{{ s.rank }}</span></td>
+<td>{{ s.title }}<div class="muted">{{ s.type }} &middot; {% if s.address|httplink %}<a href="{{ s.address }}" target="_blank" rel="noopener noreferrer nofollow">{{ s.address }}</a>{% else %}{{ s.address }}{% endif %}</div></td><td style="text-align:right"><b>{{ s.percent|pct }}%</b></td></tr>{% endfor %}</table>{% endif %}</div>
+{% endif %}
+<form method="post" action="/submissions/{{ sub.public_id }}/delete" onsubmit="return confirm('Delete this submission, its files and reports?')" style="margin-top:20px"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary">Delete submission</button></form>
+{% endblock %}

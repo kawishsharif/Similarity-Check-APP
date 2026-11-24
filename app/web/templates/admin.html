@@ -1,0 +1,45 @@
+{% extends "base.html" %}{% block body %}
+<h1>Settings</h1>
+<div class="grid">
+  <div class="card"><div class="muted">Users</div><div class="big">{{ stats.users }}</div></div>
+  <div class="card"><div class="muted">Submissions (last 7 days)</div><div class="big">{{ stats.last7 }}</div><div class="muted">{{ stats.submissions }} in total</div></div>
+  <div class="card"><div class="muted">Queue</div><div>{% for k in ["queued","ingesting","checking","reporting","done","failed"] %}{{ k }}: <b>{{ counts.get(k, 0) }}</b><br>{% endfor %}</div></div>
+</div>
+
+<h2>Report branding</h2>
+<form class="card" method="post" action="/admin/brand" enctype="multipart/form-data"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>Report logo (PNG or JPEG, up to 2 MB)</label>
+<div class="logo-preview"><img src="/brand/logo?v={{ brand_raw.logo_path|length }}{{ range(1, 10**6)|random }}" alt="Current logo"></div>
+<input type="file" name="logo" accept="image/png,image/jpeg" style="margin-top:8px">
+<p class="muted">Shown in the header and footer of every report page and on this site. A wide logo about 400 x 100 px with a transparent background works best. New reports use it immediately; reports already issued are unchanged.</p>
+<div class="row"><div><label>Brand name</label><input type="text" name="brand_name" value="{{ brand_raw.brand_name }}" required maxlength="60"></div>
+<div><label>Organisation (shown on the report cover)</label><input type="text" name="organisation" value="{{ brand_raw.organisation }}" maxlength="100"></div></div>
+<div class="row"><div><label>Primary colour</label><input type="color" name="primary_color" value="{{ brand_raw.primary_color }}"></div>
+<div><label>AI highlight colour</label><input type="color" name="ai_color" value="{{ brand_raw.ai_color }}"></div>
+<div><label>AI-then-paraphrased colour</label><input type="color" name="ai_color_paraphrased" value="{{ brand_raw.ai_color_paraphrased }}"></div></div>
+<div class="row"><div><label>Page size</label><select name="page_size"><option {{ "selected" if brand_raw.page_size == "Letter" }}>Letter</option><option {{ "selected" if brand_raw.page_size == "A4" }}>A4</option></select></div>
+<div><label>ID prefix (letters/digits)</label><input type="text" name="id_prefix" value="{{ brand_raw.id_prefix }}" maxlength="8" required></div>
+<div><label>Verification URL</label><input type="url" name="verify_url" value="{{ brand_raw.verify_url }}" required></div></div>
+<button>Save branding</button></form>
+
+<h2>Users</h2>
+<div class="card"><table><tr><th>Email</th><th>Checks used</th><th>Quota</th><th>Role</th><th>Active</th><th></th></tr>
+{% for u in users %}<tr><form method="post" action="/admin/users/{{ u.id }}"><input type="hidden" name="csrf" value="{{ csrf }}">
+<td>{{ u.email }}<div class="muted">{{ u.name }}</div></td><td>{{ usage.get(u.id, 0) }}</td><td><input type="number" name="quota" value="{{ u.quota }}" min="0" style="width:90px"></td>
+<td><select name="role"><option {{ "selected" if u.role == "user" }}>user</option><option {{ "selected" if u.role == "admin" }}>admin</option></select></td>
+<td><input type="checkbox" name="active" value="1" {{ "checked" if u.active }}></td><td><button style="margin:0">Save</button></td></form></tr>{% endfor %}</table>
+<h2>Add a user</h2>
+<form method="post" action="/admin/users"><input type="hidden" name="csrf" value="{{ csrf }}"><div class="row">
+<div><label>Email</label><input type="email" name="email" required></div><div><label>Name</label><input type="text" name="name"></div>
+<div><label>Password</label><input type="password" name="password" minlength="8" required></div><div><label>Quota</label><input type="number" name="quota" value="10" min="0"></div>
+<div><label>Role</label><select name="role"><option>user</option><option>admin</option></select></div></div><button>Create user</button></form></div>
+
+<h2>Failed jobs</h2>
+<div class="card">{% if not failed %}<span class="muted">None.</span>{% else %}<table><tr><th>Submission</th><th>Error</th><th></th></tr>
+{% for s in failed %}<tr><td>{{ s.public_id }}<div class="muted">{{ s.file_name }}</div></td><td>{{ s.error }}</td>
+<td><form method="post" action="/admin/submissions/{{ s.public_id }}/retry"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary" style="margin:0">Retry</button></form></td></tr>{% endfor %}</table>{% endif %}</div>
+
+<h2>Retention</h2>
+<form class="card" method="post" action="/admin/purge"><input type="hidden" name="csrf" value="{{ csrf }}">Uploads and reports older than {{ settings.retention_days }} days are removed automatically each day.
+<br><button class="secondary" onclick="return confirm('Delete all expired submissions now?')">Run purge now</button></form>
+{% endblock %}

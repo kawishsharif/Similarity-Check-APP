@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block body %}
+<h1>Check a paper for similarity and AI-written text</h1>
+<p class="muted" style="font-size:16px">Upload a PDF, Word or text file and receive two branded PDF reports: a Similarity Report and an AI-Writing Report.</p>
+<div class="grid">
+  <div class="card"><h2 style="margin-top:0">Similarity Report</h2>Finds passages that match the open web, open-access research and this platform's archive, with a numbered, colour-coded source list.</div>
+  <div class="card"><h2 style="margin-top:0">AI-Writing Report</h2>Estimates how much of the prose was probably machine-generated, with the flagged sentences highlighted.</div>
+</div>
+<div class="notice warn"><b>Know the limits.</b> Subscription journals, books and other institutions' papers are not searched, so similarity figures are usually lower than other checkers report. AI-writing detection is an estimate that can be wrong in both directions. <a href="/help">Read more</a>.</div>
+{% if not user %}<p><a class="btn" href="/login">Sign in</a> {% if settings.signup_open %}<a class="btn secondary" href="/signup">Create an account</a>{% endif %}</p>{% else %}<p><a class="btn" href="/upload">Start a check</a></p>{% endif %}
+{% endblock %}

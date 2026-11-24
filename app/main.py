@@ -64,6 +64,27 @@ def create_app() -> FastAPI:
             resp.headers.setdefault("Content-Security-Policy", CSP)
         return resp
 
+    from fastapi import HTTPException, Request
+    from fastapi.responses import JSONResponse, RedirectResponse
+    from starlette.exceptions import HTTPException as StarletteHTTPException
+
+    from .db import session as db_session
+    from .web.routes import Redirect, render
+
+    @app.exception_handler(Redirect)
+    async def _redirect(request: Request, exc: Redirect):
+        return RedirectResponse(exc.url, 303)
+
+    @app.exception_handler(StarletteHTTPException)
+    async def _http_error(request: Request, exc: StarletteHTTPException):
+        if request.url.path.startswith("/api/"):
+            return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
+        db = db_session()
+        try:
+            return render(request, db, "error.html", exc.status_code, code=exc.status_code, message=exc.detail if isinstance(exc.detail, str) else "Something went wrong.")
+        finally:
+            db.close()
+
     app.mount("/static", StaticFiles(directory=str(STATIC)), name="static")
     app.include_router(router)
     return app

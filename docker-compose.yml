@@ -1,0 +1,43 @@
+# One-server deployment: web app, queue worker, Redis, PostgreSQL (pgvector image), SearXNG, Caddy (HTTPS).
+x-app: &app
+  build: .
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql+psycopg://checker:${POSTGRES_PASSWORD}@db:5432/checker
+    REDIS_URL: redis://redis:6379/0
+    SEARXNG_URL: http://searxng:8080
+    DATA_DIR: /data
+  volumes:
+    - appdata:/data
+  depends_on: [db, redis]
+  restart: unless-stopped
+
+services:
+  web:
+    <<: *app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips "*"
+  worker:
+    <<: *app
+    command: python -m app.worker
+    deploy: { replicas: 1 }
+  db:
+    image: pgvector/pgvector:pg16
+    environment: { POSTGRES_DB: checker, POSTGRES_USER: checker, POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}" }
+    volumes: [pgdata:/var/lib/postgresql/data]
+    restart: unless-stopped
+  redis:
+    image: valkey/valkey:7
+    restart: unless-stopped
+  searxng:
+    image: searxng/searxng:latest
+    environment: { SEARXNG_SECRET: "${SEARXNG_SECRET}" }
+    volumes: [./deploy/searxng:/etc/searxng]
+    restart: unless-stopped
+  caddy:
+    image: caddy:2
+    ports: ["80:80", "443:443"]
+    volumes: [./deploy/Caddyfile:/etc/caddy/Caddyfile:ro, caddydata:/data]
+    depends_on: [web]
+    restart: unless-stopped
+
+volumes: { appdata: {}, pgdata: {}, caddydata: {} }

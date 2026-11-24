@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block body %}
+<h1>New check</h1>
+<p class="muted">PDF, DOCX or TXT, up to {{ settings.max_pages }} pages or {{ "{:,}".format(settings.max_words) }} words and {{ settings.max_upload_mb }} MB. English and Simplified Chinese are supported best.</p>
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+<form class="card" method="post" enctype="multipart/form-data"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>File</label><input type="file" name="file" accept=".pdf,.docx,.txt" required>
+<div class="row"><div><label>Title (optional)</label><input type="text" name="title" maxlength="300"></div><div><label>Author name for the cover (optional)</label><input type="text" name="author" maxlength="200" value="{{ user.name }}"></div></div>
+<h2>Similarity options</h2>
+<label class="check"><input type="checkbox" name="exclude_biblio" value="1" checked> Exclude the bibliography / reference list</label>
+<label class="check"><input type="checkbox" name="exclude_quotes" value="1"> Exclude quoted text</label>
+<label>Ignore matches shorter than (words)</label><input type="number" name="min_words" value="{{ settings.min_match_words }}" min="5" max="100" style="max-width:120px">
+<h2>Storage</h2>
+<label class="check"><input type="checkbox" name="consent_archive" value="1"> Add my paper to this platform's archive so later submissions can be compared with it. (Your name and title are never shown to others.)</label>
+<label class="check"><input type="checkbox" name="keep" value="1"> Keep this submission beyond the {{ settings.retention_days }}-day retention period</label>
+<p class="muted">{% if user.role == "admin" %}Administrators are not charged.{% else %}This check uses 1 of your {{ user.quota }} remaining checks.{% endif %}</p>
+<button>Upload and check</button></form>
+{% endblock %}

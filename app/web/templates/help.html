@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block body %}
+<h1>How to read the reports</h1>
+<div class="card"><h2 style="margin-top:0">Similarity</h2>
+<p>The percentage is matched words divided by counted words, after the exclusions you chose. Each word is counted once and assigned to the source with the largest total match.</p>
+<p><b>Coverage:</b> the open web, open-access research (OpenAlex, Crossref, arXiv, Europe PMC and others), Wikipedia and this platform's archive of consented uploads. Subscription journals, books and other institutions' student papers cannot be searched, so the figure is usually lower than other checkers give.</p>
+<p>A match is not proof of copying. Quoted and cited passages also appear as matches; the match groups separate them.</p></div>
+<div class="card"><h2 style="margin-top:0">AI writing</h2>
+<p>The figure is the share of qualifying prose in sentences flagged as likely AI-written. Headings, tables, reference lists and documents with under 300 words of prose are not scored. A result above zero but under 20% is shown as an asterisk because that range is too unreliable to print.</p>
+<p><b>This is an estimate.</b> Detectors make mistakes in both directions, more often on non-native English writing and on heavily edited text. Never use the figure as the only basis for a decision about a person.</p></div>
+<div class="card"><h2 style="margin-top:0">Your data</h2>
+<p>Papers are private to the uploader. Search queries sent to outside services contain single sentences, never the whole paper. Uploads and reports are deleted after {{ settings.retention_days }} days unless you keep them. A paper is added to the archive only if you tick the consent box, and it is removed if you delete the submission.</p></div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block body %}
+<h1>History</h1>
+<form method="get" class="row" style="align-items:end"><div><input type="text" name="q" value="{{ q }}" placeholder="Search title, file name or ID"></div><div style="flex:0"><button style="margin:0">Search</button></div></form>
+<div class="card">{% if not rows %}<span class="muted">No submissions yet. <a href="/upload">Start a check</a>.</span>{% else %}
+<table><tr><th>Document</th><th>Date</th><th>Status</th><th>Similarity</th><th>AI</th></tr>
+{% for r in rows %}<tr><td><a href="/submissions/{{ r.sub.public_id }}">{{ r.sub.title or r.sub.file_name }}</a><div class="muted">{{ r.sub.public_id }}</div></td>
+<td>{{ r.sub.created_at.strftime("%Y-%m-%d %H:%M") }}</td><td><span class="status {{ r.sub.status }}">{{ r.sub.status }}</span></td>
+<td>{% if r.sim %}{{ r.sim.percent|pct }}%{% else %}-{% endif %}</td><td>{% if r.ai %}{{ r.ai.display }}{% else %}-{% endif %}</td></tr>{% endfor %}</table>{% endif %}</div>
+{% endblock %}

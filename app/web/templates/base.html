@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ brand.brand_name }}{% endblock %} - Similarity and AI-Writing Checker</title>
+<link rel="stylesheet" href="/static/style.css">
+<style>:root { --brand: {{ brand.primary_color }}; }</style>
+</head><body>
+<header class="top"><div class="bar">
+  <a href="/"><img src="/brand/logo" alt="{{ brand.brand_name }}"></a>
+  <nav>
+    {% if user %}<a href="/upload">New check</a><a href="/history">History</a>{% endif %}
+    <a href="/verify">Verify a report</a><a href="/help">Help</a>
+    {% if user and user.role == "admin" %}<a href="/admin">Settings</a>{% endif %}
+  </nav>
+  {% if user %}<span class="muted">{{ user.email }}{% if user.role != "admin" %} &middot; {{ user.quota }} check{{ "" if user.quota == 1 else "s" }} left{% endif %}</span>
+  <form method="post" action="/logout"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="secondary" style="margin:0">Sign out</button></form>
+  {% else %}<a href="/login">Sign in</a>{% if settings.signup_open %}<a class="btn" style="margin:0" href="/signup">Create account</a>{% endif %}{% endif %}
+</div></header>
+<main>
+{% if flash %}<div class="flash {{ flash.kind }}">{{ flash.msg }}</div>{% endif %}
+{% block body %}{% endblock %}
+</main>
+<footer>{{ brand.brand_name }} &middot; Figures are indicators for human review, not findings of misconduct.</footer>
+<script src="/static/app.js"></script>
+</body></html>

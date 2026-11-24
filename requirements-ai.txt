@@ -1,0 +1,5 @@
+# Optional: model-based AI-writing detection (AI_DETECTOR=binoculars) and embedding paraphrase matching.
+-r requirements.txt
+torch
+transformers
+sentence-transformers
