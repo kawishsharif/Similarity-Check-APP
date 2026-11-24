@@ -6,6 +6,10 @@ a **Similarity Report** and an **AI-Writing Report**. Built from free and open-s
 
 ## Run it locally
 
+Quickest way: `./run.sh` (creates the virtualenv, installs packages, writes `.env` with an admin login on first run,
+starts the app and waits until it answers) and `./stop.sh` to stop it. `./run.sh docker` / `./stop.sh docker`
+use the Docker Compose stack instead. Manual steps:
+
 ```bash
 python -m venv .venv && . .venv/bin/activate
 pip install -r requirements-dev.txt
