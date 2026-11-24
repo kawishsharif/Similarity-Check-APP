@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block pages %}
+<div class="p">
+  <div class="rule" style="top: 60pt"></div>
+  <div class="abs headline lx" style="top: 81pt">{% if ai.scored %}{{ ai.display }} estimated as AI-written{% else %}AI-writing score not available{% endif %}</div>
+  <div class="abs lead" style="top: {{ 105 if (ai.scored and ai.display|length < 4) else 124 }}pt">
+    {% if ai.scored %}The percentage is the estimated share of qualifying text that is likely AI-generated, including AI-generated text that was probably reworded afterwards.
+      {% if ai.display == "*%" %} An asterisk means some text was flagged but the amount is under 20%, too low to print as a reliable number.{% endif %}
+    {% else %}{{ ai.message }}{% endif %}</div>
+  <div class="abs caution"><b>Caution: Review required.</b>AI-writing detection is an estimate and can be wrong in both directions. Read the highlighted passages and use your own judgement before making any decision about the author.</div>
+  <div class="rule" style="top: 148pt"></div>
+  {% set shown = ai.groups | selectattr("count") | list or [ai.groups[0]] %}
+  {% for g in shown %}
+  {% set y = 168 + loop.index0 * 38 %}
+  <div class="badge" style="top: {{ y }}pt; left: 36pt">{{ robot(g.color) }}</div>
+  <div class="abs row-line" style="top: {{ y + 0.5 }}pt"><span class="n">{{ g.count }}</span>{{ g.name }}<span class="pc">{{ g.percent|pct }}%</span></div>
+  <div class="abs row-sub" style="top: {{ y + 10.5 }}pt">{{ g.note }}</div>
+  {% endfor %}
+  {% set yb = 168 + (shown|length) * 38 - 6 %}
+  <div class="rule" style="top: {{ yb }}pt"></div>
+  <div class="abs small-label" style="top: {{ yb + 19 }}pt">Disclaimer</div>
+  <div class="abs small-text" style="top: {{ yb + 28 }}pt">{{ brand.brand_name }} estimates AI-written text with statistical models that can be wrong in both directions: human writing may be flagged and AI-written text may be missed. This report is an aid to review and should not be used as the sole basis for any decision about an author. It does not establish that academic misconduct has occurred. Qualifying text means prose of at least 300 words; headings, tables and reference lists are not scored. Report ID {{ report_id }}. Verify this report at {{ verify_link }}</div>
+  <div class="rule" style="top: {{ yb + 74 }}pt"></div>
+</div>
+{% endblock %}

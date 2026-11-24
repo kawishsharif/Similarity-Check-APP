@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block pages %}
+<div class="p">
+  <div class="rule" style="top: 60pt"></div>
+  <div class="abs headline lx" style="top: 81pt">{{ sim.percent|pct }}% overall similarity</div>
+  <div class="abs lead" style="top: 105pt">The share of counted words that match the sources listed on the following pages, after the selected exclusions. {{ "{:,}".format(sim.matched_words) }} of {{ "{:,}".format(sim.total_words) }} counted words matched.</div>
+  <div class="abs caution"><b>Caution: Review required.</b>A match shows text overlap with a source. It does not prove copying, and quoted or properly cited text can appear as a match. Review each highlighted passage before drawing any conclusion.</div>
+  <div class="rule" style="top: 148pt"></div>
+  <div class="abs small-label" style="top: 160pt">Filters applied</div>
+  <div class="abs small-text" style="top: 169pt">{{ "Bibliography excluded" if sim.filters.exclude_biblio else "Bibliography included" }} &middot; {{ "Quoted text excluded" if sim.filters.exclude_quotes else "Quoted text included" }} &middot; Matches under {{ sim.filters.min_words }} words excluded</div>
+  <div class="rule" style="top: 190pt"></div>
+  <div class="abs section-h" style="top: 202pt">Match groups</div>
+  {% for g in sim.groups %}
+  {% set y = 226 + loop.index0 * 34 %}
+  <div class="badge" style="top: {{ y }}pt; left: 36pt; background: {{ g.color }}">{{ g.count }}</div>
+  <div class="abs row-line" style="top: {{ y + 0.5 }}pt">{{ g.name }}<span class="pc">{{ g.percent|pct }}%</span></div>
+  <div class="abs row-sub" style="top: {{ y + 10.5 }}pt">{{ g.note }}</div>
+  {% endfor %}
+  <div class="rule" style="top: 366pt"></div>
+  <div class="abs section-h" style="top: 378pt">Top source types</div>
+  {% for t in sim.source_types %}
+  <div class="abs row-line" style="top: {{ 402 + loop.index0 * 16 }}pt; left: 36pt">{{ t.label }}<span class="pc sb">{{ t.percent|pct }}%</span></div>
+  {% endfor %}
+  <div class="rule" style="top: 456pt"></div>
+  {% set yy = 470 %}
+  {% if flags or sim.warnings %}
+  <div class="abs small-label" style="top: {{ yy }}pt">Integrity flags and notices</div>
+  {% for f in sim.warnings + flags %}<div class="abs flag" style="top: {{ yy + 12 + loop.index0 * 18 }}pt">&bull; {{ f }}</div>{% endfor %}
+  {% set yy = yy + 20 + (sim.warnings|length + flags|length) * 18 %}
+  <div class="rule" style="top: {{ yy - 4 }}pt"></div>
+  {% endif %}
+  <div class="abs small-label" style="top: {{ yy + 12 }}pt">Disclaimer</div>
+  <div class="abs small-text" style="top: {{ yy + 21 }}pt">{{ brand.brand_name }} compares text with the open web, open-access research and its own archive of consented submissions. It does not search subscription journals, books or other institutions' private archives, so figures can differ from other checkers. This report is an indicator for human review and is not a finding of misconduct. Report ID {{ report_id }}. Verify this report at {{ verify_link }}</div>
+</div>
+{% for page in source_pages %}
+<div class="p">
+  <div class="rule" style="top: 60pt"></div>
+  <div class="abs headline lx" style="top: 81pt; width: 400pt">Top sources{% if source_pages|length > 1 %} ({{ loop.index }}/{{ source_pages|length }}){% endif %}</div>
+  {% if loop.first and not page %}<div class="abs lead" style="top: 112pt">No matching sources were found.</div>{% endif %}
+  {% for s in page %}
+  {% set y = 124 + loop.index0 * 44 %}
+  <div class="badge" style="top: {{ y }}pt; left: 36pt; background: {{ s.color }}">{{ s.rank }}</div>
+  <div class="abs src-title" style="top: {{ y }}pt">{{ s.title }}</div>
+  <div class="abs src-sub" style="top: {{ y + 12 }}pt">{{ type_labels[s.type] }} &middot; {{ s.address }}</div>
+  <div class="abs pct-r sb" style="top: {{ y }}pt">{{ s.percent|pct }}%</div>
+  {% endfor %}
+</div>
+{% endfor %}
+{% endblock %}

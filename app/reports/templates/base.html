@@ -1,0 +1,33 @@
+{% macro robot(color) -%}
+<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="{{ color }}"/><rect x="6" y="9" width="12" height="9" rx="2.5" fill="#2D2D2D"/><rect x="11" y="5.5" width="2" height="3.5" fill="#2D2D2D"/><circle cx="12" cy="5" r="1.6" fill="#2D2D2D"/><rect x="8.3" y="11.8" width="2.2" height="2.2" rx=".5" fill="#fff"/><rect x="13.5" y="11.8" width="2.2" height="2.2" rx=".5" fill="#fff"/><rect x="9.5" y="15.2" width="5" height="1.2" rx=".5" fill="#fff"/></svg>
+{%- endmacro %}
+<!doctype html>
+<html lang="{{ sub.lang or 'en' }}">
+<head>
+<meta charset="utf-8">
+<style>{{ css|safe }}</style>
+<style>
+@page { size: {{ PW }}pt {{ PH }}pt; margin: 0; }
+:root { --pw: {{ PW }}pt; --ph: {{ PH }}pt; }
+</style>
+</head>
+<body>
+<div class="p">
+  <div class="abs cover-title lx" style="bottom: {{ PH - 376 }}pt">{{ sub.title }}</div>
+  <div class="abs cover-row" style="top: 381pt"><svg viewBox="0 0 24 24"><path fill="#7a7a7a" d="M3 3h18a1 1 0 0 1 1 1v7H3zM3 12h5l1 2h6l1-2h5v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path fill="#fff" d="M7 6h10v1.8H7zM7 9h10v1.4H7z" opacity=".0"/></svg>{{ sub.author }}</div>
+  <div class="abs cover-row" style="top: 397pt"><svg viewBox="0 0 24 24"><path fill="#7a7a7a" d="M12 3 1 9l11 6 9-4.9V16h2V9zM5 13.2v4l7 3.8 7-3.8v-4l-7 3.8z"/></svg>{{ sub.organisation or brand.organisation }}</div>
+  <div class="rule" style="top: 425pt"></div>
+  <div class="abs h-details" style="top: 444pt">Document Details</div>
+  {% set fields = [("Submission ID", sub.id), ("Submission Date", sub.submitted), ("Report Date", sub.downloaded), ("File Name", sub.file_name), ("File Size", sub.file_size)] %}
+  {% for k, v in fields %}
+  <div class="field" style="top: {{ 473 + loop.index0 * 36 }}pt"><div class="k">{{ k }}</div><div class="v">{{ v }}</div></div>
+  {% endfor %}
+  <div class="stats">
+    <div style="top: 14pt">{{ sub.pages }} {{ "Page" if sub.pages == 1 else "Pages" }}</div>
+    <div style="top: 35pt">{{ "{:,}".format(sub.words) }} Words</div>
+    <div style="top: 57pt">{{ "{:,}".format(sub.characters) }} Characters</div>
+  </div>
+</div>
+{% block pages %}{% endblock %}
+</body>
+</html>

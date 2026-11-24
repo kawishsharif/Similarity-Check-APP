@@ -1,0 +1,42 @@
+@font-face { font-family: "NS"; src: url("../fonts/NotoSans-Regular.ttf"); font-weight: 400; }
+@font-face { font-family: "NS"; src: url("../fonts/NotoSans-SemiBold.ttf"); font-weight: 600; }
+@font-face { font-family: "LX"; src: url("../fonts/LexendDeca-Medium.ttf"); font-weight: 500; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "NS", "Noto Sans SC", "Noto Sans CJK SC", "WenQuanYi Zen Hei", "DejaVu Sans", sans-serif; font-size: 7pt; line-height: 1.25; color: #191919; }
+.p { position: relative; width: var(--pw); height: var(--ph); overflow: hidden; page-break-after: always; }
+.p:last-child { page-break-after: auto; }
+.abs { position: absolute; }
+.rule { position: absolute; left: 36pt; right: 36pt; height: 0; border-top: 0.5pt solid #CCCCCC; }
+.lx { font-family: "LX", "NS", "Noto Sans SC", "WenQuanYi Zen Hei", sans-serif; font-weight: 500; }
+.sb { font-weight: 600; }
+.grey { color: #636363; }
+
+/* cover */
+.cover-title { left: 36pt; right: 36pt; font-size: 17pt; line-height: 1.2; overflow-wrap: anywhere; }
+.cover-row { left: 36pt; right: 36pt; font-size: 8pt; color: #636363; height: 12pt; line-height: 12pt; padding-left: 20pt; }
+.cover-row svg { position: absolute; left: 0; top: 0; width: 12pt; height: 12pt; }
+.h-details { left: 36pt; font-size: 10pt; font-weight: 600; }
+.field .k { font-weight: 600; color: #636363; font-size: 7pt; }
+.field .v { font-weight: 600; font-size: 7pt; margin-top: 4pt; overflow-wrap: anywhere; }
+.field { position: absolute; left: 36pt; width: 330pt; }
+.stats { position: absolute; left: 403pt; top: 470pt; width: 89pt; height: 78pt; background: #F8F8F8; }
+.stats div { position: absolute; left: 12pt; font-weight: 600; font-size: 7pt; }
+
+/* overview */
+.headline { left: 36pt; width: 262pt; font-size: 17pt; line-height: 1.15; }
+.lead { left: 36pt; width: 262pt; font-size: 7pt; line-height: 1.3; }
+.caution { left: 306pt; right: 33pt; top: 76pt; height: 56pt; background: #D0E8F9; border-radius: 10pt; padding: 10pt 12pt; color: #2D2D2D; font-size: 6pt; line-height: 1.35; }
+.caution b { display: block; font-weight: 600; margin-bottom: 7pt; }
+.badge { position: absolute; width: 12pt; height: 12pt; border-radius: 6pt; color: #fff; font-size: 6pt; font-weight: 600; text-align: center; line-height: 12pt; }
+.badge svg { width: 12pt; height: 12pt; }
+.row-line { left: 52pt; right: 36pt; font-size: 7pt; }
+.row-line .n { font-weight: 600; margin-right: 4pt; }
+.row-line .pc { margin-left: 4pt; }
+.row-sub { left: 52pt; right: 36pt; font-size: 7pt; color: #636363; }
+.pct-r { right: 36pt; text-align: right; font-size: 7pt; }
+.small-label { left: 36pt; font-size: 6pt; font-weight: 600; color: #636363; }
+.small-text { left: 36pt; right: 36pt; font-size: 6pt; color: #636363; line-height: 1.35; }
+.section-h { left: 36pt; font-size: 10pt; font-weight: 600; }
+.src-title { left: 52pt; right: 90pt; font-size: 7pt; font-weight: 600; overflow-wrap: anywhere; line-height: 1.25; }
+.src-sub { left: 52pt; right: 90pt; font-size: 6pt; color: #636363; overflow-wrap: anywhere; line-height: 1.25; }
+.flag { left: 36pt; right: 36pt; font-size: 6pt; color: #2D2D2D; line-height: 1.35; }

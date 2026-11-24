@@ -1,0 +1,11 @@
+# Brand settings. Everything the reports and site show about your brand comes from here,
+# so rebranding needs no code changes. Editable in the admin panel too.
+brand_name: "Your Brand"
+organisation: "Your Organisation"
+logo_png: "assets/logo.png"      # header logo, about 400 x 100 px
+primary_color: "#0F4C81"
+ai_color: "#52C7DB"              # highlight for likely AI-written text
+ai_color_paraphrased: "#8E6BD8"  # highlight for AI-written then paraphrased text
+page_size: "Letter"              # "Letter" or "A4"
+id_prefix: "YB"                  # submission IDs look like YB-2026-00012345
+verify_url: "http://localhost:8000/verify/"
